@@ -24,11 +24,6 @@ interface DetailCardProps {
   className?: string;
 }
 
-type EventDetailPageProps = {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
-
 export async function generateMetadata(
   { params }: { params: { slug: string } },
   parent: ResolvingMetadata
