@@ -17,19 +17,14 @@ import type { Metadata, ResolvingMetadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
 
-interface DetailCardProps {
-  title: string;
-  icon?: ReactNode;
-  children: ReactNode;
-  className?: string;
-}
-
-interface GenerateMetadataProps {
+// Define PageProps locally for this page
+interface PageProps {
   params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata(
-  { params }: GenerateMetadataProps,
+  { params }: PageProps, // Use the local PageProps
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const event = getDetailedEventById(params.slug) || hanumanEventsData.find(e => e.slug === params.slug);
@@ -40,39 +35,33 @@ export async function generateMetadata(
       description: 'The requested event could not be found.',
     };
   }
-  
+
   const eventTitle = 'name' in event && event.name ? event.name : ('title' in event && event.title ? event.title : 'Event');
   const eventDescription = 'mainDescription' in event && event.mainDescription ? event.mainDescription : ('description'in event && event.description ? event.description : 'Details about the event.');
   const eventImage = event.imageUrl ? (event.imageUrl.startsWith('http') ? event.imageUrl : `${SITE_URL}${event.imageUrl}`) : `${SITE_URL}/og-default-event.jpg`;
 
   const keywordsList: string[] = ['Hanuman Events', 'Hindu Festivals', eventTitle];
-  
-  if ('significance' in event && event.significance && Array.isArray(event.significance) && event.significance.every(s => typeof s === 'string')) { // For HanumanEvent
-    keywordsList.push(...(event.significance as string[]));
-  } else if ('significance_detail' in event && (event as DetailedHanumanEvent).significance_detail) { // For DetailedHanumanEvent
-    const detailedEvent = event as DetailedHanumanEvent;
-    if (detailedEvent.significance_detail?.key_idea) keywordsList.push(detailedEvent.significance_detail.key_idea);
-    if (detailedEvent.significance_detail?.moral_lesson) keywordsList.push(detailedEvent.significance_detail.moral_lesson);
-  }
 
-  if ('festivalDetails' in event && (event as DetailedHanumanEvent).festivalDetails?.type) {
-    keywordsList.push((event as DetailedHanumanEvent).festivalDetails!.type!);
-  }
-  if ('festivalDetails' in event && (event as DetailedHanumanEvent).festivalDetails?.associatedDeity?.name) {
-     keywordsList.push((event as DetailedHanumanEvent).festivalDetails!.associatedDeity!.name!);
-  }
-  if ('characters_involved' in event && Array.isArray(event.characters_involved)) {
-    const detailedEvent = event as DetailedHanumanEvent;
-    if (detailedEvent.characters_involved) {
-      keywordsList.push(...detailedEvent.characters_involved.map(c => c.name));
+  if (event) {
+    // Check if it's DetailedHanumanEvent first
+    if ('significance_detail' in event && (event as DetailedHanumanEvent).significance_detail) {
+      const detailedEvent = event as DetailedHanumanEvent;
+      if (detailedEvent.significance_detail?.key_idea) keywordsList.push(detailedEvent.significance_detail.key_idea);
+      if (detailedEvent.significance_detail?.moral_lesson) keywordsList.push(detailedEvent.significance_detail.moral_lesson);
+      if (detailedEvent.festivalDetails?.type) keywordsList.push(detailedEvent.festivalDetails.type);
+      if (detailedEvent.festivalDetails?.associatedDeity?.name) keywordsList.push(detailedEvent.festivalDetails.associatedDeity.name);
+      if (Array.isArray(detailedEvent.characters_involved)) {
+        keywordsList.push(...detailedEvent.characters_involved.map(c => c.name));
+      }
+    } else if ('significance' in event && Array.isArray(event.significance)) { // Fallback to HanumanEvent
+        keywordsList.push(...(event.significance as string[]).filter(s => typeof s === 'string'));
     }
   }
 
-
   return {
-    title: `${eventTitle} | Events | Hanuman Leela`, 
+    title: `${eventTitle} | Events | Hanuman Leela`,
     description: eventDescription,
-    keywords: keywordsList,
+    keywords: Array.from(new Set(keywordsList)), // Ensure unique keywords
     alternates: {
       canonical: `${SITE_URL}/events/${params.slug}`,
     },
@@ -83,13 +72,15 @@ export async function generateMetadata(
       images: [
         {
           url: eventImage,
-          width: 800, 
-          height: 600, 
+          width: 800,
+          height: 600,
           alt: eventTitle,
         },
       ],
-      type: 'article', 
+      type: 'article',
       section: 'Hindu Events and Festivals',
+      publishedTime: new Date().toISOString(),
+      authors: [`${SITE_URL}/about`],
     },
     twitter: {
       card: 'summary_large_image',
@@ -100,6 +91,13 @@ export async function generateMetadata(
   };
 }
 
+
+interface DetailCardProps {
+  title: string;
+  icon?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}
 
 const DetailCard: React.FC<DetailCardProps> = ({ title, icon, children, className }) => (
   <Card className={cn("shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card/90 backdrop-blur-sm", className)}>
@@ -115,14 +113,22 @@ const DetailCard: React.FC<DetailCardProps> = ({ title, icon, children, classNam
   </Card>
 );
 
-const SectionItem: React.FC<{label: string, value?: string | ReactNode | string[] | number | null, className?: string, labelClassName?: string, valueClassName?: string}> = ({label, value, className, labelClassName, valueClassName}) => {
+interface SectionItemProps {
+  label: string;
+  value?: string | ReactNode | string[] | number | null;
+  className?: string;
+  labelClassName?: string;
+  valueClassName?: string;
+}
+
+const SectionItem: React.FC<SectionItemProps> = ({label, value, className, labelClassName, valueClassName}) => {
   if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) return null;
-  
+
   return (
     <div className={cn("py-2", className)}>
       <h4 className={cn("font-semibold text-secondary-foreground text-md mb-1", labelClassName)}>{label}</h4>
-      {typeof value === 'string' || typeof value === 'number' ? <p className={cn("text-sm", valueClassName)}>{value}</p> : 
-       Array.isArray(value) ? 
+      {typeof value === 'string' || typeof value === 'number' ? <p className={cn("text-sm", valueClassName)}>{value}</p> :
+       Array.isArray(value) ?
         <ul className={cn("list-disc list-inside space-y-1 text-sm text-foreground/85", valueClassName)}>
             {value.map((item, index) => <li key={index}>{typeof item === 'string' ? item : (item as {type:string; description:string}).description || String(item)}</li>)}
         </ul>
@@ -131,10 +137,17 @@ const SectionItem: React.FC<{label: string, value?: string | ReactNode | string[
   );
 };
 
+interface ListDisplayProps {
+  items: string[] | undefined | Array<{type: string, description: string}>;
+  title?: string;
+  ordered?: boolean;
+  itemClassName?: string;
+  itemIcon?: ReactNode;
+}
 
-const ListDisplay: React.FC<{ items: string[] | undefined | Array<{type: string, description: string}>; title?: string, ordered?: boolean, itemClassName?: string, itemIcon?: ReactNode }> = ({ items, title, ordered = false, itemClassName = "text-sm text-foreground/85", itemIcon }) => {
+const ListDisplay: React.FC<ListDisplayProps> = ({ items, title, ordered = false, itemClassName = "text-sm text-foreground/85", itemIcon }) => {
   if (!items || items.length === 0) return null;
-  
+
   const ListElement = ordered ? 'ol' : 'ul';
   const listStyle = ordered ? 'list-decimal' : 'list-disc';
 
@@ -145,7 +158,7 @@ const ListDisplay: React.FC<{ items: string[] | undefined | Array<{type: string,
         {items.map((item, index) => (
           <li key={typeof item === 'string' ? index : item.type || index} className="flex items-start">
             {itemIcon && React.isValidElement(itemIcon) && React.cloneElement(itemIcon as React.ReactElement, { className: "h-4 w-4 mr-2 mt-0.5 text-accent flex-shrink-0"})}
-            {typeof item === 'string' ? 
+            {typeof item === 'string' ?
               <span>{item}</span> :
               <span><strong>{item.type}:</strong> {item.description}</span>
             }
@@ -159,10 +172,7 @@ const ListDisplay: React.FC<{ items: string[] | undefined | Array<{type: string,
 export default function EventDetailPage({
   params,
   searchParams
-}: {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+}: PageProps) { // Use the local PageProps
   const event = getDetailedEventById(params.slug);
 
   if (!event) {
@@ -210,7 +220,7 @@ export default function EventDetailPage({
     }
     notFound();
   }
-  
+
   const { festivalDetails, symbolism_detail, significance_detail, impact_detail } = event;
 
   return (
@@ -272,7 +282,7 @@ export default function EventDetailPage({
           </ul>
         </DetailCard>
       </div>
-      
+
       {event.sequence_of_events && event.sequence_of_events.length > 0 && (
         <DetailCard title="Sequence of Events / Typical Observance" icon={<ListOrdered />}>
           <ol className="list-decimal list-outside pl-5 space-y-3">
@@ -284,7 +294,7 @@ export default function EventDetailPage({
           </ol>
         </DetailCard>
       )}
-      
+
       {festivalDetails?.scriptureDetails && (
         <DetailCard title="Scripture Details" icon={<BookOpen />}>
             <SectionItem label="Position in Ramayana" value={festivalDetails.scriptureDetails.positionInRamayana ? `${festivalDetails.scriptureDetails.positionInRamayana}th Book` : 'N/A'} />
@@ -308,7 +318,7 @@ export default function EventDetailPage({
             )}
         </DetailCard>
       )}
-      
+
       {festivalDetails?.legends && (
         <DetailCard title="Associated Legends" icon={<BookHeart />}>
             {festivalDetails.legends.birthStory && <SectionItem label="Birth Story" value={festivalDetails.legends.birthStory} />}
@@ -357,7 +367,7 @@ export default function EventDetailPage({
             {festivalDetails?.modernObservations?.socialImpact && <SectionItem label="Modern Social Impact" value={festivalDetails.modernObservations.socialImpact} />}
         </DetailCard>
       </div>
-      
+
       {/* Display regularWorshipDetails if available (for Tuesday/Saturday worship) */}
       {festivalDetails?.regularWorshipDetails && (
         <>
@@ -394,7 +404,7 @@ export default function EventDetailPage({
               </div>
             )}
           </DetailCard>
-          
+
           <DetailCard title="Benefits, Recommendations & Beliefs" icon={<TrendingUp />}>
             <ListDisplay title="Overall Benefits:" items={festivalDetails.regularWorshipDetails.benefits} itemIcon={<Sparkles />} />
             <ListDisplay title="Recommended For:" items={festivalDetails.regularWorshipDetails.recommended_for} itemIcon={<UserCheck />} />
@@ -439,7 +449,7 @@ export default function EventDetailPage({
                 ))}
             </DetailCard>
          )}
-         
+
          <div className="grid md:grid-cols-2 gap-8">
             <DetailCard title="Mantras & Chants" icon={<BookOpenText />}>
                 <ListDisplay items={festivalDetails.mantrasAndChants} itemIcon={<Music />} />
@@ -472,12 +482,13 @@ export default function EventDetailPage({
   );
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const detailedEventSlugs = detailedEventsData.map(event => ({ slug: event.id }));
   const summaryEventSlugs = hanumanEventsData.map(event => ({ slug: event.slug }));
-  
+
   const allSlugsSet = new Set([...detailedEventSlugs.map(s => s.slug), ...summaryEventSlugs.map(s => s.slug)]);
   
   return Array.from(allSlugsSet).map(slug => ({ slug }));
 }
+    
     
