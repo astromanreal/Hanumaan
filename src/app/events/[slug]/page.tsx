@@ -24,13 +24,6 @@ interface DetailCardProps {
   className?: string;
 }
 
-// Define a type for the component's props
-type EventDetailPageProps = {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
-
-// Define a type for the component's props
 type EventDetailPageProps = {
   params: { slug: string };
   searchParams?: { [key: string]: string | string[] | undefined };
