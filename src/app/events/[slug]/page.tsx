@@ -17,8 +17,15 @@ import type { Metadata, ResolvingMetadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
 
+// Explicitly define props for generateMetadata
+interface GenerateMetadataProps {
+  params: { slug: string };
+  // searchParams is usually not needed for generateMetadata, but can be included if used
+  // searchParams?: { [key: string]: string | string[] | undefined };
+}
+
 export async function generateMetadata(
-  { params }: { params: { slug: string } }, // Explicit inline type for params
+  { params }: GenerateMetadataProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const event = getDetailedEventById(params.slug) || hanumanEventsData.find(e => e.slug === params.slug);
@@ -54,10 +61,12 @@ export async function generateMetadata(
     }
   }
 
+  const uniqueKeywords = Array.from(new Set(keywordsList));
+
   return {
     title: `${eventTitle} | Events | Hanuman Leela`,
     description: eventDescription,
-    keywords: Array.from(new Set(keywordsList)),
+    keywords: uniqueKeywords,
     alternates: {
       canonical: `${SITE_URL}/events/${params.slug}`,
     },
@@ -87,6 +96,11 @@ export async function generateMetadata(
   };
 }
 
+// Explicitly define props for the Page component
+interface EventDetailPageProps {
+  params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
 
 interface DetailCardProps {
   title: string;
@@ -165,13 +179,7 @@ const ListDisplay: React.FC<ListDisplayProps> = ({ items, title, ordered = false
   );
 };
 
-export default function EventDetailPage({
-  params,
-  searchParams // searchParams is optional
-}: {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+export default function EventDetailPage({ params, searchParams }: EventDetailPageProps) {
   const event = getDetailedEventById(params.slug);
 
   if (!event) {
@@ -482,7 +490,10 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const detailedEventSlugs = detailedEventsData.map(event => ({ slug: event.id }));
   const summaryEventSlugs = hanumanEventsData.map(event => ({ slug: event.slug }));
 
-  const allSlugsSet = new Set([...detailedEventSlugs.map(s => s.slug), ...summaryEventSlugs.map(s => s.slug)]);
+  // Combine and deduplicate slugs
+  const allSlugsSet = new Set<string>();
+  detailedEventSlugs.forEach(s => allSlugsSet.add(s.slug));
+  summaryEventSlugs.forEach(s => allSlugsSet.add(s.slug));
   
   return Array.from(allSlugsSet).map(slug => ({ slug }));
 }
