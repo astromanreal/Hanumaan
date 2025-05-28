@@ -30,7 +30,7 @@ type EventDetailPageProps = {
 };
 
 export async function generateMetadata(
-  { params }: GenerateMetadataProps,
+  { params }: { params: { slug: string } },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const event = getDetailedEventById(params.slug) || hanumanEventsData.find(e => e.slug === params.slug);
