@@ -55,14 +55,13 @@ export async function generateMetadata(
     if (detailedEvent.significance_detail?.moral_lesson) keywordsList.push(detailedEvent.significance_detail.moral_lesson);
   }
 
-  if ((event as DetailedHanumanEvent).festivalDetails?.type) {
+  if ('festivalDetails' in event && (event as DetailedHanumanEvent).festivalDetails?.type) {
     keywordsList.push((event as DetailedHanumanEvent).festivalDetails!.type!);
   }
-  if ((event as DetailedHanumanEvent).festivalDetails?.associatedDeity?.name) {
+  if ('festivalDetails' in event && (event as DetailedHanumanEvent).festivalDetails?.associatedDeity?.name) {
      keywordsList.push((event as DetailedHanumanEvent).festivalDetails!.associatedDeity!.name!);
   }
   if ('characters_involved' in event && Array.isArray(event.characters_involved)) {
-    // Ensure type safety for accessing name property from characters_involved
     const detailedEvent = event as DetailedHanumanEvent;
     if (detailedEvent.characters_involved) {
       keywordsList.push(...detailedEvent.characters_involved.map(c => c.name));
@@ -157,13 +156,13 @@ const ListDisplay: React.FC<{ items: string[] | undefined | Array<{type: string,
   );
 };
 
-// Explicitly define the props for the page component
-interface EventDetailPageProps {
+export default function EventDetailPage({
+  params,
+  searchParams
+}: {
   params: { slug: string };
   searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-export default function EventDetailPage({ params, searchParams }: EventDetailPageProps) {
+}) {
   const event = getDetailedEventById(params.slug);
 
   if (!event) {
@@ -474,9 +473,7 @@ export default function EventDetailPage({ params, searchParams }: EventDetailPag
 }
 
 export async function generateStaticParams() {
-  // Using detailedEventsData which should have `id` matching `slug` from hanumanEventsData
   const detailedEventSlugs = detailedEventsData.map(event => ({ slug: event.id }));
-  // Fallback for events that might only be in hanumanEventsData
   const summaryEventSlugs = hanumanEventsData.map(event => ({ slug: event.slug }));
   
   const allSlugsSet = new Set([...detailedEventSlugs.map(s => s.slug), ...summaryEventSlugs.map(s => s.slug)]);
