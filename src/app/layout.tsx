@@ -81,7 +81,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <head>
-      <meta name="google-site-verification" content="baioUnZal-RFIQ-Apz3cQEklB4EmQOT5Un3cx1qcBqs" />
+      <meta name="google-site-verification" content="mac7aLjz9hgBPOeatEJp8fZ6RL2GRi8PeWQfgcITzFU" />
       </head>
       <body className="antialiased flex flex-col min-h-screen">
         <ThemeProvider>
