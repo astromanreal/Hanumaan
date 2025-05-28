@@ -17,14 +17,8 @@ import type { Metadata, ResolvingMetadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
 
-// Define PageProps locally for this page
-interface PageProps {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
 export async function generateMetadata(
-  { params }: PageProps, // Use the local PageProps
+  { params }: { params: { slug: string } }, // Explicit inline type for params
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const event = getDetailedEventById(params.slug) || hanumanEventsData.find(e => e.slug === params.slug);
@@ -33,6 +27,9 @@ export async function generateMetadata(
     return {
       title: 'Event Not Found | Hanuman Leela',
       description: 'The requested event could not be found.',
+      alternates: {
+        canonical: `${SITE_URL}/events/${params.slug}`,
+      },
     };
   }
 
@@ -43,7 +40,6 @@ export async function generateMetadata(
   const keywordsList: string[] = ['Hanuman Events', 'Hindu Festivals', eventTitle];
 
   if (event) {
-    // Check if it's DetailedHanumanEvent first
     if ('significance_detail' in event && (event as DetailedHanumanEvent).significance_detail) {
       const detailedEvent = event as DetailedHanumanEvent;
       if (detailedEvent.significance_detail?.key_idea) keywordsList.push(detailedEvent.significance_detail.key_idea);
@@ -53,7 +49,7 @@ export async function generateMetadata(
       if (Array.isArray(detailedEvent.characters_involved)) {
         keywordsList.push(...detailedEvent.characters_involved.map(c => c.name));
       }
-    } else if ('significance' in event && Array.isArray(event.significance)) { // Fallback to HanumanEvent
+    } else if ('significance' in event && Array.isArray(event.significance)) { 
         keywordsList.push(...(event.significance as string[]).filter(s => typeof s === 'string'));
     }
   }
@@ -61,7 +57,7 @@ export async function generateMetadata(
   return {
     title: `${eventTitle} | Events | Hanuman Leela`,
     description: eventDescription,
-    keywords: Array.from(new Set(keywordsList)), // Ensure unique keywords
+    keywords: Array.from(new Set(keywordsList)),
     alternates: {
       canonical: `${SITE_URL}/events/${params.slug}`,
     },
@@ -171,8 +167,11 @@ const ListDisplay: React.FC<ListDisplayProps> = ({ items, title, ordered = false
 
 export default function EventDetailPage({
   params,
-  searchParams
-}: PageProps) { // Use the local PageProps
+  searchParams // searchParams is optional
+}: {
+  params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
   const event = getDetailedEventById(params.slug);
 
   if (!event) {
@@ -327,7 +326,6 @@ export default function EventDetailPage({
         </DetailCard>
       )}
 
-      {/* Detailed Significance and Symbolism for Narrative Events */}
       <div className="grid md:grid-cols-3 gap-8">
         <DetailCard title="Significance" icon={<ListChecks />}>
             <SectionItem label="Core Idea" value={significance_detail.key_idea} />
@@ -340,7 +338,7 @@ export default function EventDetailPage({
 
         <DetailCard title="Symbolism" icon={<Sparkles />}>
             {Object.entries(symbolism_detail).map(([key, value]) => {
-                if (value && key !== 'meaning_of_name_interpretations') { // meaning_of_name_interpretations handled separately
+                if (value && key !== 'meaning_of_name_interpretations') {
                     const label = key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
                     return <SectionItem key={key} label={label} value={value as string} />;
                 }
@@ -368,7 +366,6 @@ export default function EventDetailPage({
         </DetailCard>
       </div>
 
-      {/* Display regularWorshipDetails if available (for Tuesday/Saturday worship) */}
       {festivalDetails?.regularWorshipDetails && (
         <>
           <DetailCard title="Significance of Worship Days" icon={<Calendar />}>
@@ -413,7 +410,6 @@ export default function EventDetailPage({
         </>
       )}
 
-      {/* Existing Festival Details section, conditional on festivalDetails but NOT regularWorshipDetails */}
       {festivalDetails && !festivalDetails.regularWorshipDetails && (
         <>
          <DetailCard title="Observance Details" icon={<CalendarDays />}>
