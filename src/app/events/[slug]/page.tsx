@@ -1,3 +1,4 @@
+
 // src/app/events/[slug]/page.tsx
 import { PageHeader } from '@/components/ui/page-header';
 import { Button } from '@/components/ui/button';
@@ -23,7 +24,6 @@ interface DetailCardProps {
   className?: string;
 }
 
-// Renamed Props to GenerateMetadataProps for clarity
 interface GenerateMetadataProps {
   params: { slug: string };
 }
@@ -47,7 +47,7 @@ export async function generateMetadata(
 
   const keywordsList: string[] = ['Hanuman Events', 'Hindu Festivals', eventTitle];
   
-  if ('significance' in event && event.significance && Array.isArray(event.significance) && typeof event.significance[0] === 'string') { // For HanumanEvent
+  if ('significance' in event && event.significance && Array.isArray(event.significance) && event.significance.every(s => typeof s === 'string')) { // For HanumanEvent
     keywordsList.push(...(event.significance as string[]));
   } else if ('significance_detail' in event && (event as DetailedHanumanEvent).significance_detail) { // For DetailedHanumanEvent
     const detailedEvent = event as DetailedHanumanEvent;
@@ -62,7 +62,11 @@ export async function generateMetadata(
      keywordsList.push((event as DetailedHanumanEvent).festivalDetails!.associatedDeity!.name!);
   }
   if ('characters_involved' in event && Array.isArray(event.characters_involved)) {
-    keywordsList.push(...event.characters_involved.map(c => c.name));
+    // Ensure type safety for accessing name property from characters_involved
+    const detailedEvent = event as DetailedHanumanEvent;
+    if (detailedEvent.characters_involved) {
+      keywordsList.push(...detailedEvent.characters_involved.map(c => c.name));
+    }
   }
 
 
@@ -153,14 +157,13 @@ const ListDisplay: React.FC<{ items: string[] | undefined | Array<{type: string,
   );
 };
 
-// Using explicit inline type for props
-export default function EventDetailPage({ 
-  params,
-  searchParams 
-}: { 
+// Explicitly define the props for the page component
+interface EventDetailPageProps {
   params: { slug: string };
   searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+}
+
+export default function EventDetailPage({ params, searchParams }: EventDetailPageProps) {
   const event = getDetailedEventById(params.slug);
 
   if (!event) {
