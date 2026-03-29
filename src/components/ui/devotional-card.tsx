@@ -1,5 +1,6 @@
+
 // src/components/ui/devotional-card.tsx
-import React, { type ReactNode } from 'react'; // Added React import
+import React, { type ReactNode } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -35,18 +36,18 @@ export function DevotionalCard({
 }: DevotionalCardProps) {
   return (
     <Card className={cn(
-      "overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 bg-card group", 
+      "overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.01] bg-card group", 
       className
     )}>
       {imageUrl && (
-        <div className={cn("relative h-56 w-full", imageClassName)}>
+        <div className={cn("relative aspect-video w-full overflow-hidden bg-muted", imageClassName)}>
           <Image 
             src={imageUrl} 
             alt={title} 
-            fill // Changed layout="fill" to fill for Next.js 13+
-            objectFit="cover" 
+            fill 
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             data-ai-hint={imageHint || "spiritual theme"} 
-            className="transition-transform duration-500 group-hover:scale-110"
           />
         </div>
       )}
@@ -65,8 +66,7 @@ export function DevotionalCard({
       )}
       {actions && (
         <CardFooter className={cn("mt-auto", footerClassName)}> 
-          {/* Ensure actions is a single ReactNode or wrapped if it's multiple elements */}
-          {React.Children.count(actions) > 1 ? <div>{actions}</div> : actions}
+          {React.Children.count(actions) > 1 ? <div className="w-full">{actions}</div> : actions}
         </CardFooter>
       )}
     </Card>

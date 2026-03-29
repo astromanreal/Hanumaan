@@ -1,118 +1,126 @@
+'use client';
 
-import { PageHeader } from '@/components/ui/page-header';
-import { DevotionalCard } from '@/components/ui/devotional-card';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import React from 'react';
-import { ArrowRight, Shield } from 'lucide-react'; 
-import { ramayanaKandas, mahabharataData } from '@/data/epics-data'; 
-// Removed Metadata import
+import { PageHeader } from '@/components/ui/page-header';
+import { Button } from '@/components/ui/button';
+import { 
+  ArrowRight, 
+  Shield, 
+  Compass
+} from 'lucide-react';
+import { ramayanaKandas, type RamayanaKanda } from '@/data/epics-data';
+import Image from 'next/image';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+
+const ProgressIndicator = () => {
+  return (
+    <div className="w-full pb-8 pt-4">
+      <div className="flex flex-wrap items-center justify-center md:justify-between gap-y-8 gap-x-4 px-4">
+        {ramayanaKandas.map((kanda, index) => (
+          <React.Fragment key={kanda.slug}>
+            <Link href={`/ramayana/${kanda.slug}`} className="flex flex-col items-center group cursor-pointer">
+              <div className={cn(
+                "w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300",
+                "border-primary bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground shadow-[0_0_15px_rgba(249,115,22,0.2)]"
+              )}>
+                {React.cloneElement(kanda.icon as React.ReactElement, { className: "h-6 w-6" })}
+              </div>
+              <span className="mt-2 text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">
+                {kanda.title.split(' ')[0]}
+              </span>
+            </Link>
+            {index < ramayanaKandas.length - 1 && (
+              <div className="hidden lg:block flex-grow h-px bg-gradient-to-r from-primary/50 to-primary/10 mx-2" />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const KandaCard = ({ kanda }: { kanda: RamayanaKanda }) => {
+  return (
+    <div className="group relative h-[500px] rounded-3xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_20px_50px_rgba(245,158,11,0.2)] border border-border/50 bg-neutral-950">
+      {/* Background Image with Gradient Overlay */}
+      <div className="absolute inset-0">
+        <Image
+          src={kanda.imageUrl}
+          alt={kanda.title}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-40"
+          data-ai-hint={kanda.imageHint}
+        />
+        <div className={cn("absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-transparent", kanda.colorTheme)} />
+      </div>
+
+      {/* Card Content */}
+      <div className="relative h-full p-8 flex flex-col justify-end space-y-4 text-left">
+        <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl w-fit shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+          {React.cloneElement(kanda.icon as React.ReactElement, { className: "h-6 w-6 text-amber-400" })}
+        </div>
+        
+        <h3 className="text-3xl font-bold text-white tracking-tight">
+          {kanda.title}
+        </h3>
+        
+        <p className="text-neutral-300 leading-relaxed line-clamp-3 text-sm">
+          {kanda.summary}
+        </p>
+
+        <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 backdrop-blur-sm shadow-[0_0_15px_-5px_rgba(245,158,11,0.3)]">
+          <div className="flex items-center gap-2 mb-1">
+            <Shield className="h-4 w-4 text-amber-400" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400">Hanuman's Role</span>
+          </div>
+          <p className="text-xs text-neutral-400 italic leading-relaxed">
+            {kanda.hanumanFocus}
+          </p>
+        </div>
+
+        <Button asChild variant="ghost" className="w-full justify-between group/btn text-amber-400 hover:text-amber-300 hover:bg-white/5 border border-amber-500/20 rounded-xl px-6">
+          <Link href={`/ramayana/${kanda.slug}`}>
+            Explore Kanda
+            <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+          </Link>
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 export default function EpicsPage() {
   return (
-    <div className="space-y-16">
-      <PageHeader
-        title="The Ramayana: An Epic Saga"
-        description="An overview of the sacred epic, which narrates the life of Lord Rama, the seventh avatar of Vishnu. Discover the timeless lessons of dharma, devotion, and the triumph of good over evil."
-      />
-
-      <section>
-        <h3 className="text-2xl font-semibold text-center text-primary mb-8">The Kandas: Chapters of the Ramayana</h3>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {ramayanaKandas.map((kanda) => (
-            <DevotionalCard
-              key={kanda.title}
-              title={kanda.title}
-              imageUrl={kanda.imageUrl}
-              imageHint={kanda.imageHint}
-              content={
-                <div className="space-y-3">
-                  <div className="flex items-center mb-2">
-                     {React.isValidElement(kanda.icon) ? React.cloneElement(kanda.icon as React.ReactElement) : kanda.icon}
-                  </div>
-                  <p className="text-foreground/80 text-sm leading-relaxed min-h-[60px]">{kanda.summary}</p>
-                   {kanda.hanumanFocus && (
-                    <div className="mt-3 pt-3 border-t border-border/30">
-                      <h4 className="text-xs font-semibold text-muted-foreground mb-1.5 flex items-center">
-                        <Shield className="h-3.5 w-3.5 mr-1.5 text-primary/80" /> Hanuman's Role:
-                      </h4>
-                      <p className="text-xs text-foreground/70 leading-relaxed">{kanda.hanumanFocus}</p>
-                    </div>
-                  )}
-                </div>
-              }
-              actions={
-                <Button asChild variant="default" size="sm" className="w-full mt-auto bg-primary hover:bg-primary/90 text-primary-foreground">
-                  <Link href={`/ramayana/${kanda.slug}`}>
-                    Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              }
-              className="flex flex-col h-full"
-              contentClassName="flex-grow"
-              headerClassName="pb-2"
-              titleClassName="text-xl"
-            />
-          ))}
+    <div className="space-y-24 bg-gradient-to-b from-background via-muted/20 to-background -mx-4 px-4 py-16 overflow-x-hidden">
+      {/* Hero Section */}
+      <section className="relative text-center max-w-4xl mx-auto space-y-6">
+        <div className="inline-block p-2 px-4 bg-primary/10 border border-primary/30 rounded-full text-primary text-xs font-bold uppercase tracking-[0.3em] mb-4">
+          Sacred Chronicles
         </div>
-      </section>
-
-      <div className="border-t-2 border-border/50 my-16"></div>
-
-      <PageHeader
-        title="The Mahabharata: An Epic of Dharma"
-        description={`The Mahabharata, an epic of ancient India, is one of the longest poems ever written. It is traditionally divided into ${mahabharataData.total_parvas} Parvas (books), each detailing crucial events and philosophical discourses.`}
-      />
-      
-      <section>
-        <h2 className="text-3xl font-semibold text-center text-secondary-foreground mb-4">An Ocean of Stories and Wisdom</h2>
-        <p className="max-w-3xl mx-auto text-center text-lg text-foreground/80 mb-10">
-          The Mahabharata narrates the struggle between two groups of cousins in the Kurukshetra War and the fates of the Kaurava and the Pāṇḍava princes. It also contains philosophical and devotional material, such as the Bhagavad Gita. The epic explores human goals (artha or purpose, kāma or pleasure, dharma or duty, and mokṣa or liberation).
+        <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-b from-primary via-primary/80 to-accent/50 bg-clip-text text-transparent tracking-tighter">
+          The Epic of Ramayana
+        </h1>
+        <p className="text-xl text-muted-foreground leading-relaxed font-light">
+          A timeless odyssey of <span className="text-primary font-medium">Dharma</span>, <span className="text-foreground font-medium">Devotion</span>, and the eternal triumph of Light. Journey through the sacred Kandas that define the soul of Bharata.
         </p>
-        <h3 className="text-2xl font-semibold text-center text-primary mb-8">The Parvas: Books of the Mahabharata</h3>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mahabharataData.parvas.map((parva) => (
-            <DevotionalCard
-              key={parva.name}
-              title={
-                <div className="flex items-center">
-                  {React.isValidElement(parva.icon) ? React.cloneElement(parva.icon as React.ReactElement, { className: "h-6 w-6 text-accent" }) : parva.icon}
-                  <span className="ml-3">{parva.name}</span>
-                </div>
-              }
-              content={
-                <div className="flex flex-col h-full">
-                  <p className="text-foreground/80 text-sm leading-relaxed mb-4 min-h-[60px]">{parva.description}</p>
-                  {parva.subsections && parva.subsections.length > 0 && (
-                    <div className="mt-auto pt-4 border-t border-border/40">
-                      <h4 className="text-xs font-semibold text-muted-foreground mb-2 tracking-wider uppercase">Key Sections:</h4>
-                      <ul className="space-y-1.5 text-xs text-foreground/80 list-none pl-0">
-                        {parva.subsections.slice(0, 3).map((subsection, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="text-accent mr-2.5 mt-[3px] flex-shrink-0">&#x25B8;</span>
-                            <span>{subsection}</span>
-                          </li>
-                        ))}
-                        {parva.subsections.length > 3 && (
-                           <li className="flex items-start">
-                            <span className="text-accent mr-2.5 mt-[3px] flex-shrink-0">&#x25B8;</span>
-                            <span>And more...</span>
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              }
-              className="bg-card shadow-xl border border-border/70 flex flex-col h-full transition-all duration-300 ease-out hover:shadow-primary/20 hover:border-primary/40"
-              contentClassName="flex-grow p-5"
-              headerClassName="pb-3 pt-5"
-              titleClassName="text-xl"
-            />
-          ))}
-        </div>
       </section>
 
+      {/* Progress Journey */}
+      <section className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-center md:justify-start gap-3 mb-8 px-4">
+          <Compass className="h-5 w-5 text-primary" />
+          <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-primary">The Path of Rama</h2>
+        </div>
+        <ProgressIndicator />
+      </section>
+
+      {/* Kandas Grid */}
+      <section className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
+        {ramayanaKandas.map((kanda) => (
+          <KandaCard key={kanda.slug} kanda={kanda} />
+        ))}
+      </section>
     </div>
   );
 }

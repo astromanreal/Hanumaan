@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
@@ -7,8 +7,18 @@ import { Footer } from '@/components/layout/footer';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { StructuredData } from '@/components/seo/structured-data';
+import { GoogleAnalytics } from '@/components/analytics/google-analytics';
+import { ClientAppWrapper } from '@/components/layout/client-app-wrapper';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
+
+export const viewport: Viewport = {
+  themeColor: '#f97316',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -24,8 +34,16 @@ export const metadata: Metadata = {
     'Anjaneya', 'Maruti', 'Pawan Putra', 'Sankat Mochan', 'Hindu Mythology', 'Bhakti Yoga', 'Valmiki Ramayana',
     'Tulsidas Ramcharitmanas'
   ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Hanuman Leela',
+  },
+  formatDetection: {
+    telephone: false,
+  },
   authors: [{ name: 'Hanuman Leela Team', url: SITE_URL }],
-  creator: 'Hanuman Leela Team',
+  creator: 'Sathyam Sarthak',
   publisher: 'Hanuman Leela Portal',
   robots: {
     index: true,
@@ -58,8 +76,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Hanuman Leela – Divine Strength, Devotion & Wisdom',
     description: 'Explore the divine essence of Sri Hanuman: his life, teachings, mantras, and the epic Ramayana.',
-    // siteId: '@yourTwitterHandle', // Replace with your Twitter handle ID if available
-    // creator: '@yourTwitterHandle', // Replace with your Twitter handle if available
     images: ['https://i.pinimg.com/736x/f4/e8/fa/f4e8fae530b706b64d5904b4356eb5ce.jpg'], 
   },
   icons: {
@@ -67,10 +83,10 @@ export const metadata: Metadata = {
     shortcut: '/favicon-16x16.png', 
     apple: '/apple-touch-icon.png', 
   },
-  manifest: `${SITE_URL}/site.webmanifest`, 
   alternates: {
     canonical: '/',
-  }
+  },
+  manifest: '/manifest.json'
 };
 
 export default function RootLayout({
@@ -78,17 +94,35 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const organizationData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Hanuman Leela",
+    "url": SITE_URL,
+    "logo": "https://i.pinimg.com/736x/f4/e8/fa/f4e8fae530b706b64d5904b4356eb5ce.jpg",
+    "description": "A sacred portal dedicated to the divine essence of Lord Hanuman.",
+    "sameAs": [
+      "https://twitter.com/Sathyamsarthak",
+      "https://instagram.com/srishikharji",
+      "https://github.com/astromanreal"
+    ]
+  };
+
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <body className="antialiased flex flex-col min-h-screen">
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || 'G-XXXXXXXXXX'} />
+        <StructuredData data={organizationData} />
         <ThemeProvider>
           <TooltipProvider>
-            <Navbar />
-            <main className="flex-grow container mx-auto px-4 py-8">
-              {children}
-            </main>
-            <Footer />
-            <Toaster />
+            <ClientAppWrapper>
+              <Navbar />
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+              <Toaster />
+            </ClientAppWrapper>
           </TooltipProvider>
         </ThemeProvider>
       </body>

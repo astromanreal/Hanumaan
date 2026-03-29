@@ -1,405 +1,305 @@
+
 // src/app/ramayana/[slug]/page.tsx
 import { PageHeader } from '@/components/ui/page-header';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ChevronLeft, Shield, BookOpen, Users, CalendarDays, ListChecks, Sparkles, Users2, Drama, MapPin, MessageCircle, Zap as LucideZap } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Badge } from '@/components/ui/badge';
+import { 
+  Shield, Clock, Users2, 
+  Sparkles, MapPin, BookOpen, Star, ArrowLeft, ArrowRight,
+  ChevronLeft, ChevronRight, Split, Lightbulb, Quote
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ramayanaKandas } from '@/data/epics-data';
+import { charactersData } from '@/data/characters-data';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import React from 'react';
-import { balaKandaBookData } from '@/data/kanda-details/bala-kanda-data';
-import { ayodhyaKandaBookData } from '@/data/kanda-details/ayodhya-kanda-data';
-import { aranyaKandaBookData } from '@/data/kanda-details/aranya-kanda-data';
-import { kishkindhaKandaBookData } from '@/data/kanda-details/kishkindha-kanda-data';
-import { sundaraKandaBookData } from '@/data/kanda-details/sundara-kanda-data';
-import { yuddhaKandaBookData } from '@/data/kanda-details/yuddha-kanda-data';
-import { uttaraKandaBookData } from '@/data/kanda-details/uttara-kanda-data';
-import type { KandaBook } from '@/data/kanda-details/kanda-types';
-import { DevotionalCard } from '@/components/ui/devotional-card';
-import type { Metadata, ResolvingMetadata } from 'next';
+import { cn } from '@/lib/utils';
+import type { Metadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
 
-interface KandaInfoCardProps {
-  icon: React.ReactNode;
-  label: string;
-  value: string | number;
-}
-
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
+  { params }: Props
 ): Promise<Metadata> {
-  const kandaMeta = ramayanaKandas.find(k => k.slug === params.slug);
-
-  if (!kandaMeta) {
-    return {
-      title: 'Kanda Not Found',
-      description: 'The requested Ramayana Kanda could not be found.',
-    };
-  }
-
-  const kandaTitle = kandaMeta.title.includes(':') ? kandaMeta.title.split(': ')[0] : kandaMeta.title;
-  const kandaSpecificTitle = kandaMeta.title.includes(':') ? kandaMeta.title.split(': ')[1] : kandaMeta.title;
-  
-  const pageTitle = `${kandaTitle}${kandaSpecificTitle && kandaSpecificTitle !== kandaTitle ? `: ${kandaSpecificTitle}` : ''}`;
-  const kandaDescription = kandaMeta.summary;
-  const kandaImage = kandaMeta.imageUrl ? (kandaMeta.imageUrl.startsWith('http') ? kandaMeta.imageUrl : `${SITE_URL}${kandaMeta.imageUrl}`) : `${SITE_URL}/og-ramayana-default.jpg`;
-
-  const keywords = ['Ramayana', 'Hindu Epic', kandaTitle, kandaSpecificTitle, 'Rama', 'Sita', 'Hanuman', 'Valmiki Ramayana'];
-  if (kandaMeta.hanumanFocus) {
-    keywords.push(kandaMeta.hanumanFocus, "Hanuman's Role");
-  }
-  // Add themes or key characters from detailed data if available
-  let detailedKandaData: KandaBook | null = null;
-   switch (params.slug) {
-    case 'bala-kanda': detailedKandaData = balaKandaBookData.book; break;
-    case 'ayodhya-kanda': detailedKandaData = ayodhyaKandaBookData.book; break;
-    case 'aranya-kanda': detailedKandaData = aranyaKandaBookData.book; break;
-    case 'kishkindha-kanda': detailedKandaData = kishkindhaKandaBookData.book; break;
-    case 'sundara-kanda': detailedKandaData = sundaraKandaBookData.book; break;
-    case 'yuddha-kanda': detailedKandaData = yuddhaKandaBookData.book; break;
-    case 'uttara-kanda': detailedKandaData = uttaraKandaBookData.book; break;
-  }
-  if (detailedKandaData?.overview.themes) keywords.push(...detailedKandaData.overview.themes);
-  if (detailedKandaData?.key_characters) keywords.push(...detailedKandaData.key_characters.map(c => c.name));
-
+  const { slug } = await params;
+  const kanda = ramayanaKandas.find(k => k.slug === slug);
+  if (!kanda) return { title: 'Kanda Not Found' };
 
   return {
-    title: pageTitle,
-    description: kandaDescription,
-    keywords: keywords,
-    alternates: {
-      canonical: `${SITE_URL}/ramayana/${params.slug}`,
-    },
+    title: `${kanda.title} | The Epic Ramayana`,
+    description: kanda.summary,
+    alternates: { canonical: `${SITE_URL}/ramayana/${slug}` },
     openGraph: {
-      title: `${pageTitle} | Ramayana | Hanuman Leela`,
-      description: kandaDescription,
-      url: `${SITE_URL}/ramayana/${params.slug}`,
-      images: [
-        {
-          url: kandaImage,
-          width: 800, 
-          height: 600, 
-          alt: pageTitle,
-        },
-      ],
-      type: 'article',
-      section: 'Ramayana',
-      publishedTime: new Date().toISOString(), 
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${pageTitle} | Ramayana | Hanuman Leela`,
-      description: kandaDescription,
-      images: [kandaImage],
-    },
+      title: `${kanda.title} | Hanuman Leela`,
+      description: kanda.summary,
+      url: `${SITE_URL}/ramayana/${slug}`,
+      images: kanda.imageUrl ? [{ url: kanda.imageUrl }] : [],
+    }
   };
 }
 
+export default async function KandaDetailPage(props: Props) {
+  const { slug } = await props.params;
+  const kandaIndex = ramayanaKandas.findIndex(k => k.slug === slug);
+  const kanda = ramayanaKandas[kandaIndex];
 
-const KandaInfoCard: React.FC<KandaInfoCardProps> = ({ icon, label, value }) => (
-  <Card className="bg-muted/50 shadow-sm">
-    <CardContent className="p-4 flex items-center space-x-3">
-      <div className="p-2 bg-primary/10 rounded-md text-primary">
-        {React.cloneElement(icon as React.ReactElement, { className: "h-6 w-6" })}
-      </div>
-      <div>
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <p className="text-xl font-semibold text-foreground">{value}</p>
-      </div>
-    </CardContent>
-  </Card>
-);
+  if (!kanda) notFound();
 
-const KandaDetailDisplay: React.FC<{ kandaData: KandaBook; kandaMeta: (typeof ramayanaKandas)[0] }> = ({ kandaData, kandaMeta }) => {
+  const prevKanda = kandaIndex > 0 ? ramayanaKandas[kandaIndex - 1] : null;
+  const nextKanda = kandaIndex < ramayanaKandas.length - 1 ? ramayanaKandas[kandaIndex + 1] : null;
+
   return (
-    <div className="space-y-12">
-      <PageHeader
-        title={kandaData.name}
-        description={`${kandaData.meaning} - Exploring the divine narratives and teachings.`}
-      />
+    <div className="animate-in fade-in duration-1000 space-y-20 pb-32">
+      {/* Hero Section */}
+      <section className="relative -mx-4 h-[70vh] min-h-[500px] flex items-end overflow-hidden">
+        <Image
+          src={kanda.imageUrl}
+          alt={kanda.title}
+          fill
+          priority
+          className="object-cover transition-transform duration-[3000ms] scale-110 hover:scale-100"
+          data-ai-hint={kanda.imageHint}
+        />
+        <div className={cn("absolute inset-0 bg-gradient-to-t via-background/60 to-transparent", kanda.colorTheme)} />
+        
+        <div className="container relative z-10 pb-16 px-4">
+          <Link 
+            href="/ramayana" 
+            className="inline-flex items-center text-white/80 hover:text-primary mb-8 transition-colors group text-sm font-bold uppercase tracking-widest"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            Back to Sacred Scrolls
+          </Link>
+          <div className="space-y-4 max-w-4xl">
+            <span className="inline-block px-4 py-1.5 bg-primary/20 backdrop-blur-md border border-primary/30 rounded-full text-primary-foreground text-xs font-bold uppercase tracking-[0.3em]">
+              {kanda.subtitle}
+            </span>
+            <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tighter drop-shadow-2xl">
+              {kanda.title}
+            </h1>
+            <p className="text-xl md:text-3xl text-white/90 font-light italic max-w-3xl drop-shadow-lg leading-relaxed border-l-4 border-primary/50 pl-8 py-2">
+              "{kanda.tagline}"
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <Card className="shadow-xl overflow-hidden bg-card/80 backdrop-blur-sm">
-        {kandaMeta.imageUrl && (
-          <div className="relative h-64 sm:h-72 md:h-96 w-full">
-            <Image
-              src={kandaMeta.imageUrl}
-              alt={kandaData.name}
-              fill 
-              objectFit="cover"
-              data-ai-hint={kandaMeta.imageHint}
-              className="transition-transform duration-500 hover:scale-105"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-6 md:p-8">
-              {kandaMeta.icon && React.isValidElement(kandaMeta.icon) ? React.cloneElement(kandaMeta.icon as React.ReactElement, { className: "h-10 w-10 sm:h-12 sm:w-12 text-white drop-shadow-lg mb-2" }) : kandaMeta.icon}
-              <h2 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-xl">{kandaData.name}</h2>
-              <p className="text-lg text-white/90 drop-shadow-md">{kandaData.meaning}</p>
-            </div>
+      {/* Quick Summary */}
+      <section className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div className="inline-flex items-center gap-2 text-primary">
+            <BookOpen className="h-6 w-6" />
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em]">Quick Summary</h2>
           </div>
-        )}
-        <CardContent className="p-6 md:p-8 space-y-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <KandaInfoCard icon={<BookOpen />} label="Kanda Name" value={kandaData.name} />
-            <KandaInfoCard icon={<CalendarDays />} label="Total Chapters" value={kandaData.chapters} />
-            {kandaData.total_verses && (
-              <KandaInfoCard icon={<ListChecks />} label="Total Verses" value={kandaData.total_verses} />
-            )}
-          </div>
-        </CardContent>
-      </Card>
-      
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl text-primary flex items-center"><Sparkles className="mr-3 h-6 w-6"/>Overview</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-foreground/90 leading-relaxed">{kandaData.overview.summary}</p>
-          <div>
-            <h4 className="font-semibold text-lg text-secondary-foreground mb-2">Key Events:</h4>
-            <ul className="list-disc list-inside space-y-1 text-foreground/80 pl-4">
-              {kandaData.overview.key_events.map(event => <li key={event}>{event}</li>)}
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-lg text-secondary-foreground mb-2">Core Themes:</h4>
-            <div className="flex flex-wrap gap-2">
-              {kandaData.overview.themes.map(theme => <Badge key={theme} variant="secondary">{theme}</Badge>)}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          <p className="text-2xl md:text-3xl text-foreground/90 leading-relaxed font-light italic">
+            {kanda.summary}
+          </p>
+        </div>
+      </section>
 
-      {kandaData.chapters_detail && kandaData.chapters_detail.length > 0 && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl text-primary flex items-center"><BookOpen className="mr-3 h-6 w-6"/>Chapter Summaries</CardTitle>
-            <CardDescription>Highlights from the {kandaData.chapters} chapters of {kandaData.name}.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Accordion type="single" collapsible className="w-full">
-              {kandaData.chapters_detail.map(chapter => (
-                <AccordionItem value={`chapter-${chapter.chapter_number}`} key={chapter.chapter_number}>
-                  <AccordionTrigger className="text-left hover:text-accent">
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-muted-foreground mr-2">Chapter {chapter.chapter_number}:</span>
-                      <span className="font-semibold text-primary group-hover:text-accent">{chapter.title}</span>
+      {/* Main Content Grid */}
+      <div className="container mx-auto px-4 grid lg:grid-cols-12 gap-16">
+        
+        {/* Left Column: Narrative & Timeline */}
+        <div className="lg:col-span-8 space-y-24">
+          
+          {/* Detailed Narrative */}
+          <section className="space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <Quote className="h-6 w-6" />
+              </div>
+              <h3 className="text-3xl font-bold tracking-tight">The Sacred Narrative</h3>
+            </div>
+            <p className="text-xl text-muted-foreground leading-relaxed font-light first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:mr-3 first-letter:float-left">
+              {kanda.fullStory}
+            </p>
+          </section>
+
+          {/* Timeline of Events */}
+          <section className="space-y-12">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <Clock className="h-6 w-6" />
+              </div>
+              <h3 className="text-3xl font-bold tracking-tight">The Flow of Time</h3>
+            </div>
+            <div className="relative space-y-12 pl-10 before:absolute before:left-[15px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-primary before:via-primary/50 before:to-transparent">
+              {kanda.timeline.map((event, i) => (
+                <div key={i} className="relative group">
+                  <div className="absolute -left-[35px] top-1.5 w-5 h-5 rounded-full bg-background border-4 border-primary group-hover:bg-primary transition-all duration-300 shadow-[0_0_15px_rgba(249,115,22,0.4)]" />
+                  <p className="text-xl text-foreground/90 font-medium group-hover:text-primary transition-colors">
+                    {event}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Turning Points */}
+          <section className="space-y-12">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-accent/10 rounded-lg text-accent">
+                <Split className="h-6 w-6" />
+              </div>
+              <h3 className="text-3xl font-bold tracking-tight">Turning Points</h3>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              {kanda.turningPoints.map((point, i) => (
+                <Card key={i} className="bg-accent/5 border-accent/20 hover:border-accent/40 transition-colors shadow-lg">
+                  <CardContent className="p-8 flex gap-4">
+                    <div className="h-8 w-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold shrink-0">
+                      {i + 1}
                     </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="text-foreground/85 leading-relaxed p-4 bg-muted/30 rounded-md">
-                    {chapter.summary}
-                  </AccordionContent>
-                </AccordionItem>
+                    <p className="text-lg text-foreground/80 font-medium italic leading-relaxed">
+                      {point}
+                    </p>
+                  </CardContent>
+                </Card>
               ))}
-            </Accordion>
-          </CardContent>
-        </Card>
-      )}
+            </div>
+          </section>
+        </div>
 
-      {kandaData.key_episodes && kandaData.key_episodes.length > 0 && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl text-primary flex items-center"><LucideZap className="mr-3 h-6 w-6"/>Key Episodes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Accordion type="single" collapsible className="w-full">
-              {kandaData.key_episodes.map((episode, index) => (
-                <AccordionItem value={`episode-${index}`} key={index}>
-                  <AccordionTrigger className="text-left hover:text-accent">
-                     <span className="font-semibold text-primary group-hover:text-accent">{episode.name}</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="text-foreground/85 leading-relaxed p-4 bg-muted/30 rounded-md">
-                    {episode.description}
-                  </AccordionContent>
-                </AccordionItem>
+        {/* Right Column: Sidebar Insights */}
+        <div className="lg:col-span-4 space-y-16">
+          
+          {/* Hanuman's Role Highlight (The Glow Box) */}
+          <Card className="relative overflow-hidden border-primary/30 bg-primary/5 shadow-[0_0_50px_rgba(249,115,22,0.2)] animate-pulse hover:animate-none transition-all duration-1000">
+            <div className="absolute -right-10 -top-10 p-4 opacity-5 rotate-12">
+              <Shield className="h-40 w-40 text-primary" />
+            </div>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm font-bold uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+                <Star className="h-5 w-5 fill-current" />
+                Hanuman Ji's Presence
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-foreground/90 leading-relaxed italic text-lg border-l-2 border-primary/30 pl-6 py-2">
+                {kanda.hanumanFocus}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Key Characters */}
+          <div className="space-y-8">
+            <h4 className="text-xl font-bold flex items-center gap-2 uppercase tracking-widest text-muted-foreground">
+              <Users2 className="h-5 w-5 text-primary" />
+              Main Figures
+            </h4>
+            <div className="grid gap-4">
+              {kanda.keyCharacters.map((char) => {
+                const charDetails = charactersData.find(c => c.name.toLowerCase().includes(char.name.toLowerCase()));
+                
+                return charDetails ? (
+                  <Link 
+                    key={char.name} 
+                    href={`/characters/${charDetails.slug}`}
+                    className="p-5 rounded-2xl bg-card border border-border/50 hover:border-primary/40 hover:shadow-xl transition-all group flex flex-col gap-1"
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{char.name}</p>
+                      <ArrowRight className="h-4 w-4 text-primary opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
+                    </div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">{char.role}</p>
+                  </Link>
+                ) : (
+                  <div key={char.name} className="p-5 rounded-2xl bg-muted/30 border border-border/50">
+                    <p className="font-bold text-foreground">{char.name}</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">{char.role}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Philosophical Meanings */}
+          <div className="space-y-8">
+            <h4 className="text-xl font-bold flex items-center gap-2 uppercase tracking-widest text-muted-foreground">
+              <Lightbulb className="h-5 w-5 text-yellow-500" />
+              Deeper Meanings
+            </h4>
+            <div className="space-y-6">
+              {kanda.philosophicalMeanings.map((phi, i) => (
+                <div key={i} className="p-6 rounded-2xl bg-muted/40 border border-border shadow-inner">
+                  <h5 className="font-bold text-primary mb-2 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" /> {phi.title}
+                  </h5>
+                  <p className="text-sm text-foreground/70 leading-relaxed italic">
+                    {phi.meaning}
+                  </p>
+                </div>
               ))}
-            </Accordion>
-          </CardContent>
-        </Card>
-      )}
+            </div>
+          </div>
 
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl text-primary flex items-center"><Users2 className="mr-3 h-6 w-6"/>Key Characters</CardTitle>
-        </CardHeader>
-        <CardContent className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {kandaData.key_characters.map(char => (
-            <DevotionalCard
-              key={char.name}
-              title={char.name}
-              className="bg-card/70 shadow-md hover:shadow-lg"
-              titleClassName="text-xl !text-secondary-foreground"
-              headerClassName="pb-2"
-              contentClassName="pt-2"
-              content={
-                  <p className="text-sm text-foreground/80 leading-relaxed">{char.description}</p>
-              }
-            />
-          ))}
-        </CardContent>
-      </Card>
-
-      {kandaData.key_locations && kandaData.key_locations.length > 0 && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl text-primary flex items-center"><MapPin className="mr-3 h-6 w-6"/>Key Locations</CardTitle>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-6">
-            {kandaData.key_locations.map(loc => (
-              <DevotionalCard
-                key={loc.name}
-                title={loc.name}
-                className="bg-card/70 shadow-md hover:shadow-lg"
-                titleClassName="text-xl !text-secondary-foreground"
-                headerClassName="pb-2"
-                contentClassName="pt-2"
-                content={
-                    <p className="text-sm text-foreground/80 leading-relaxed">{loc.description}</p>
-                }
-              />
-            ))}
-          </CardContent>
-        </Card>
-      )}
-
-      {kandaData.philosophical_themes && kandaData.philosophical_themes.length > 0 && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl text-primary flex items-center"><MessageCircle className="mr-3 h-6 w-6"/>Philosophical Themes</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-             <ul className="list-disc list-inside space-y-2 text-foreground/85 pl-4">
-                {kandaData.philosophical_themes.map((theme, index) => (
-                  <li key={index}>{theme}</li>
+          {/* Divine Lessons */}
+          <div className="p-10 rounded-[3rem] bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-2xl space-y-8 relative overflow-hidden">
+            <div className="absolute -bottom-10 -left-10 p-4 opacity-10">
+              <MapPin className="h-32 w-32" />
+            </div>
+            <div className="relative z-10">
+              <h4 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <Sparkles className="h-6 w-6" /> Divine Lessons
+              </h4>
+              <ul className="space-y-6">
+                {kanda.lifeLessons.map((lesson, i) => (
+                  <li key={i} className="flex gap-4 text-sm font-light leading-relaxed">
+                    <div className="mt-1.5 w-2 h-2 rounded-full bg-white shrink-0" />
+                    {lesson}
+                  </li>
                 ))}
               </ul>
-          </CardContent>
-        </Card>
-      )}
-
-
-      <div className="text-center mt-12">
-        <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/10 hover:text-primary transition-colors">
-          <Link href="/ramayana">
-            <ChevronLeft className="mr-2 h-5 w-5" />
-            Back to Ramayana Overview
-          </Link>
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-
-export default function KandaDetailPage({ params }: { params: { slug: string } }) {
-  const kandaMeta = ramayanaKandas.find(k => k.slug === params.slug);
-
-  if (!kandaMeta) {
-    notFound();
-  }
-
-  let kandaData: KandaBook | null = null;
-  switch (params.slug) {
-    case 'bala-kanda':
-      kandaData = balaKandaBookData.book;
-      break;
-    case 'ayodhya-kanda':
-      kandaData = ayodhyaKandaBookData.book;
-      break;
-    case 'aranya-kanda':
-      kandaData = aranyaKandaBookData.book;
-      break;
-    case 'kishkindha-kanda':
-      kandaData = kishkindhaKandaBookData.book;
-      break;
-    case 'sundara-kanda':
-      kandaData = sundaraKandaBookData.book;
-      break;
-    case 'yuddha-kanda':
-      kandaData = yuddhaKandaBookData.book;
-      break;
-    case 'uttara-kanda':
-      kandaData = uttaraKandaBookData.book;
-      break;
-    default:
-      break;
-  }
-
-  if (kandaData) {
-    return <KandaDetailDisplay kandaData={kandaData} kandaMeta={kandaMeta} />;
-  }
-
-  // Fallback for Kandas without detailed data structure yet
-  const kandaBaseTitle = kandaMeta.title.includes(':') ? kandaMeta.title.split(': ')[0] : kandaMeta.title;
-  const kandaSpecificTitle = kandaMeta.title.includes(':') ? kandaMeta.title.split(': ')[1] : kandaMeta.title;
-
-  return (
-    <div className="space-y-12">
-      <PageHeader
-        title={kandaBaseTitle}
-        description={`Exploring the narratives, characters, and spiritual lessons of ${kandaSpecificTitle}.`}
-      />
-
-      <Card className="shadow-xl overflow-hidden bg-card/80 backdrop-blur-sm">
-        {kandaMeta.imageUrl && (
-          <div className="relative h-64 sm:h-72 md:h-96 w-full">
-            <Image
-              src={kandaMeta.imageUrl}
-              alt={kandaMeta.title}
-              fill
-              objectFit="cover"
-              data-ai-hint={kandaMeta.imageHint}
-              className="transition-transform duration-500 hover:scale-105"
-            />
-             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-             <div className="absolute bottom-0 left-0 p-6 md:p-8">
-                {React.isValidElement(kandaMeta.icon) ? React.cloneElement(kandaMeta.icon as React.ReactElement, { className: "h-10 w-10 sm:h-12 sm:w-12 text-white drop-shadow-lg mb-2" }) : kandaMeta.icon}
-                <h2 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-xl">{kandaSpecificTitle}</h2>
-             </div>
-          </div>
-        )}
-        
-        <CardContent className="p-6 md:p-8 space-y-6 text-lg">
-          <div>
-            <h3 className="text-2xl font-semibold text-secondary-foreground mb-3">Summary</h3>
-            <p className="text-foreground/90 leading-relaxed whitespace-pre-line">{kandaMeta.summary}</p>
-          </div>
-          
-          {kandaMeta.hanumanFocus && (
-            <div className="mt-6 p-6 bg-background/70 rounded-lg shadow-inner border border-border/50">
-              <h3 className="text-2xl font-semibold text-primary mb-3 flex items-center">
-                <Shield className="h-7 w-7 mr-3" />
-                Hanuman's Significance in this Kanda
-              </h3>
-              <p className="text-foreground/85 leading-relaxed whitespace-pre-line">{kandaMeta.hanumanFocus}</p>
             </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <div className="text-center">
-        <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/10 hover:text-primary transition-colors">
-          <Link href="/ramayana">
-            <ChevronLeft className="mr-2 h-5 w-5" />
-            Back to Ramayana Overview
-          </Link>
-        </Button>
+          </div>
+        </div>
       </div>
+
+      {/* Navigation Footer */}
+      <section className="container mx-auto px-4 pt-20 border-t border-border/50">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-8">
+          {prevKanda ? (
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto group border-primary/20 h-20 px-8 rounded-2xl bg-card hover:bg-primary/5">
+              <Link href={`/ramayana/${prevKanda.slug}`} className="flex items-center gap-6">
+                <ChevronLeft className="h-6 w-6 transition-transform group-hover:-translate-x-2" />
+                <div className="text-left">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-1">Previous Scroll</p>
+                  <p className="text-xl font-bold text-primary">{prevKanda.title}</p>
+                </div>
+              </Link>
+            </Button>
+          ) : <div className="hidden sm:block" />}
+
+          {nextKanda ? (
+            <Button asChild variant="default" size="lg" className="w-full sm:w-auto group bg-primary h-20 px-8 rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+              <Link href={`/ramayana/${nextKanda.slug}`} className="flex items-center gap-6">
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-white/70 mb-1">Next Scroll</p>
+                  <p className="text-xl font-bold text-white">{nextKanda.title}</p>
+                </div>
+                <ChevronRight className="h-6 w-6 transition-transform group-hover:translate-x-2 text-white" />
+              </Link>
+            </Button>
+          ) : (
+            <Button asChild variant="default" size="lg" className="w-full sm:w-auto group bg-accent h-20 px-10 rounded-2xl shadow-2xl shadow-accent/30 hover:scale-105 transition-all">
+              <Link href="/explore">
+                <span className="text-xl font-bold">The Journey Never Ends</span>
+                <Compass className="ml-4 h-6 w-6 animate-spin-slow" />
+              </Link>
+            </Button>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
 
 export async function generateStaticParams() {
-  return ramayanaKandas.map((kanda) => ({
-    slug: kanda.slug,
-  }));
+  return ramayanaKandas.map((kanda) => ({ slug: kanda.slug }));
 }

@@ -1,46 +1,17 @@
-
 import Image from 'next/image';
 import { PageHeader } from '@/components/ui/page-header';
 import { DevotionalCard } from '@/components/ui/devotional-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Heart, Shield, BookOpen, ArrowRight, Award, Wind, Users, Footprints, CalendarDays } from 'lucide-react';
+import { 
+  Heart, Shield, BookOpen, ArrowRight, Award, 
+  Wind, Users, Footprints, CalendarDays, 
+  Sparkles, LayoutDashboard, Compass
+} from 'lucide-react';
 import type { ReactNode } from 'react';
-import type { Metadata } from 'next';
+import { charactersData } from '@/data/characters-data';
+import { ramayanaKandas } from '@/data/epics-data';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
-
-export const metadata: Metadata = {
-  title: 'Hanuman Leela: Portal to Divine Strength, Devotion & Wisdom of Sri Hanuman',
-  description: 'Embark on a spiritual journey with Hanuman Leela. Discover the life, teachings, mantras, and epic tales of Lord Hanuman (Bajrangbali). Explore Ramayana, Ashta Siddhis, and more.',
-  keywords: ['Hanuman', 'Bajrangbali', 'Hindu God', 'Devotion', 'Strength', 'Wisdom', 'Ramayana', 'Spiritual Portal', 'Hanuman Leela Home', 'Sri Hanuman', 'Teachings', 'Mantras', 'Epics', 'Ashta Siddhis', 'Panchamukhi Hanuman'],
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    title: 'Hanuman Leela: Portal to Divine Strength, Devotion & Wisdom of Sri Hanuman',
-    description: 'Embark on a spiritual journey with Hanuman Leela. Discover the life, teachings, mantras, and epic tales of Lord Hanuman (Bajrangbali).',
-    url: `${SITE_URL}/`,
-    images: [
-      {
-        url: 'https://i.pinimg.com/736x/f4/e8/fa/f4e8fae530b706b64d5904b4356eb5ce.jpg',
-        width: 736,
-        height: 920, 
-        alt: 'Lord Hanuman - Embodiment of Devotion',
-      },
-    ],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Hanuman Leela: Portal to Divine Strength, Devotion & Wisdom of Sri Hanuman',
-    description: 'Embark on a spiritual journey with Hanuman Leela. Discover the life, teachings, mantras, and epic tales of Lord Hanuman (Bajrangbali).',
-    images: ['https://i.pinimg.com/736x/f4/e8/fa/f4e8fae530b706b64d5904b4356eb5ce.jpg'],
-  },
-};
-
-
-// Helper components for the Key Facts section
 interface DetailCategoryProps {
   title: string;
   icon: ReactNode;
@@ -61,7 +32,7 @@ const DetailCategory: React.FC<DetailCategoryProps> = ({ title, icon, children }
 
 interface DetailItemProps {
   label: string;
-  children: ReactNode; // For the value
+  children: ReactNode;
 }
 
 const DetailItem: React.FC<DetailItemProps> = ({ label, children }) => (
@@ -71,175 +42,180 @@ const DetailItem: React.FC<DetailItemProps> = ({ label, children }) => (
   </li>
 );
 
-
 export default function HomePage() {
+  // Take a few featured characters for the home page
+  const featuredCharacters = charactersData.slice(0, 4);
+  const featuredKandas = ramayanaKandas.slice(4, 6); // Sundara and Yuddha
+
   return (
-    <div className="space-y-16">
+    <div className="space-y-32 pb-20">
       {/* Hero Section */}
-      <section className="py-16 md:py-24">
+      <section className="relative pt-16 md:pt-24 overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="flex justify-center md:justify-start order-last md:order-first">
-              <Image 
-                src="https://i.pinimg.com/736x/f4/e8/fa/f4e8fae530b706b64d5904b4356eb5ce.jpg" 
-                alt="Lord Hanuman in a majestic and serene pose" 
-                width={400} 
-                height={500} 
-                className="rounded-xl shadow-2xl object-cover transform transition-transform duration-500 hover:scale-105"
-                data-ai-hint="hanuman majestic serene"
-                priority
-              />
-            </div>
-            <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-6xl font-bold text-primary drop-shadow-sm">
-                Sri Hanuman: Embodiment of Devotion
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="text-center lg:text-left space-y-8 relative z-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-primary text-xs font-bold uppercase tracking-[0.2em]">
+                <Sparkles className="h-4 w-4" /> The Eternal Portal
+              </div>
+              <h1 className="text-5xl md:text-7xl font-bold text-primary tracking-tighter leading-[1.1]">
+                Sri Hanuman: <br />
+                <span className="text-foreground">Embodiment of Devotion</span>
               </h1>
-              <p className="mt-6 text-xl text-foreground/80 leading-relaxed">
-                Discover the divine strength, unwavering devotion, profound wisdom, and absolute fearlessness of Bajrangbali.
+              <p className="text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
+                Explore the divine strength, unwavering loyalty, and profound wisdom of Bajrangbali through the sacred lens of the Ramayana.
               </p>
-              <div className="mt-10 flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                <Button asChild size="lg" className="shadow-lg">
-                  <Link href="/journey">Explore His Journey <Footprints className="ml-2 h-5 w-5" /></Link>
-                </Button>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="lg" 
-                  className="shadow-lg border-primary text-primary hover:bg-primary/10 hover:text-primary"
-                >
-                  <Link href="/mantras">Chant His Praises</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Key Facts about Hanuman Section */}
-      <section>
-        <PageHeader 
-          title="Key Facts about Hanuman"
-          description="A concise overview of Lord Hanuman's divine attributes, lineage, and significance."
-        />
-        <div className="bg-card p-6 sm:p-8 rounded-xl shadow-xl space-y-8 max-w-4xl mx-auto">
-          <DetailCategory title="Titles & Essence" icon={<Award className="h-7 w-7 text-primary" />}>
-            <DetailItem label="Known As">God of Wisdom, Strength, Courage, Devotion, and Self-Discipline</DetailItem>
-            <DetailItem label="Status">Member of Chiranjivi (Immortals)</DetailItem>
-          </DetailCategory>
-
-          <DetailCategory title="Affiliations & Abode" icon={<Wind className="h-7 w-7 text-primary" />}>
-            <DetailItem label="Devotion">Rama devotee</DetailItem>
-            <DetailItem label="Primary Affiliations">Deva, Chiranjivi, Vanara</DetailItem>
-            <DetailItem label="Divine Aspects">Avatar of Shiva (Shaivism), Son and Avatar of Vayu (Vaishnavism)</DetailItem>
-            <DetailItem label="Abode">Kishkindha</DetailItem>
-          </DetailCategory>
-
-          <DetailCategory title="Worship & Significance" icon={<BookOpen className="h-7 w-7 text-primary" />}>
-            <DetailItem label="Mantra">Oṁ Śrī Hanumate Namaḥ</DetailItem>
-            <DetailItem label="Weapon">Gada (mace)</DetailItem>
-            <DetailItem label="Auspicious Days">Saturday, Tuesday</DetailItem>
-            <DetailItem label="Sacred Texts">Ramayana and its other versions, Hanuman Chalisa</DetailItem>
-            <DetailItem label="Festivals">Hanuman Jayanti, Diwali</DetailItem>
-          </DetailCategory>
-
-          <DetailCategory title="Genealogy" icon={<Users className="h-7 w-7 text-primary" />}>
-            <DetailItem label="Spiritual Father">Vayu (God of Wind)</DetailItem>
-            <DetailItem label="Parents">Kesari (father) & Añjanā (mother)</DetailItem>
-            <DetailItem label="Siblings">Matiman, Shrutiman, Ketuman, Gatiman, and Dhritiman (brothers)</DetailItem>
-          </DetailCategory>
-        </div>
-      </section>
-
-      {/* Who is Hanuman? */}
-      <section>
-        <PageHeader 
-          title="The Divine Maruti" 
-          description="Hanumanji, the son of Vayu (the Wind God) and Anjana, is a central figure in the epic Ramayana. His life is a testament to selfless service, immense power, and boundless devotion to Lord Rama."
-        />
-        <div className="grid md:grid-cols-2 gap-8 items-start"> 
-          <DevotionalCard
-            title="Divine Origin & Unwavering Bhakti"
-            imageUrl="https://i.pinimg.com/736x/a5/39/b6/a539b6f6407d914e7e167cd4f4922b3d.jpg"
-            imageHint="hanuman praying serene"
-            className="flex flex-col" 
-            contentClassName="flex-grow" 
-            content={
-              <div className="space-y-4 text-foreground/90">
-                <p>Born with extraordinary abilities, Hanuman chose the path of Bhakti Yoga, dedicating his entire being to Lord Rama. His devotion is unparalleled, serving as an eternal inspiration for seekers of truth and righteousness.</p>
-                <p>He is revered for his humility despite his immense strength, his wisdom despite his playful nature as a child, and his ability to overcome any obstacle in service of the divine.</p>
-              </div>
-            }
-          />
-          <div className="space-y-6 p-6 bg-card rounded-lg shadow-lg h-full"> 
-            <h3 className="text-2xl font-semibold text-primary">Key Attributes:</h3>
-            <ul className="space-y-3 text-foreground/90">
-              <li className="flex items-start"><Heart className="h-6 w-6 mr-3 text-accent flex-shrink-0 mt-1" /> <span><strong>Unmatched Devotion (Bhakti):</strong> Absolute dedication to Lord Rama, Sita, and Lakshman.</span></li>
-              <li className="flex items-start"><Shield className="h-6 w-6 mr-3 text-accent flex-shrink-0 mt-1" /> <span><strong>Immense Strength (Shakti):</strong> Capable of altering his form, leaping oceans, and lifting mountains.</span></li>
-              <li className="flex items-start"><BookOpen className="h-6 w-6 mr-3 text-accent flex-shrink-0 mt-1" /> <span><strong>Profound Wisdom (Jnana):</strong> Master of Vedas and scriptures, a guiding light of knowledge.</span></li>
-            </ul>
-          </div>
-        </div>
-      </section>
-      
-      {/* Devotion to Sri Ram, Sita, Lakshman */}
-      <section className="bg-muted py-12 rounded-lg">
-        <PageHeader 
-          title="In Service of the Divine Trio"
-          description="Hanuman's life revolves around his selfless service to Lord Rama, Mata Sita, and Lakshmana. His loyalty and dedication are legendary."
-        />
-        <div className="grid md:grid-cols-3 gap-8">
-          <DevotionalCard 
-            title="Lord Rama" 
-            imageUrl="https://i.pinimg.com/736x/4a/f7/13/4af713e69a8854277674f6771d5d9d3d.jpg"
-            imageHint="rama deity hindu"
-            description="Hanuman's devotion to Rama is the cornerstone of his existence. He sees Rama as the Supreme Being and his master." 
-          />
-          <DevotionalCard 
-            title="Mata Sita" 
-            imageUrl="https://i.pinimg.com/736x/bf/34/22/bf342252129d5486858a9494b7be0cfe.jpg"
-            imageHint="sita deity hindu"
-            description="Hanuman reveres Sita as the Divine Mother. His search for her in Lanka is a testament to his courage and love." 
-          />
-          <DevotionalCard 
-            title="Lakshmana" 
-            imageUrl="https://i.pinimg.com/736x/b0/96/4e/b0964edf04cc481feb90c2c170494cc0.jpg"
-            imageHint="lakshman deity hindu"
-            description="Hanuman shares a deep bond of respect and camaraderie with Lakshmana, Rama's devoted brother." 
-          />
-        </div>
-      </section>
-
-      {/* Explore Events Section */}
-      <section className="py-12 bg-muted/70 rounded-xl shadow-lg">
-        <PageHeader
-          title="Sacred Events & Festivals"
-          description="Discover significant observances dedicated to Lord Hanuman and immerse yourself in divine celebrations."
-        />
-        <div className="container mx-auto px-4 text-center max-w-2xl">
-          <DevotionalCard
-            title="Journey Through Divine Celebrations"
-            className="bg-card shadow-xl border border-primary/30"
-            contentClassName="p-8"
-            content={
-              <div className="space-y-6 text-center">
-                <div className="flex justify-center">
-                  <CalendarDays className="h-16 w-16 text-primary" />
-                </div>
-                <p className="text-lg text-foreground/85 leading-relaxed">
-                  Our Events page offers a gateway to understanding the rich traditions and auspicious occasions associated with Lord Hanuman. Explore upcoming festivals, learn about their significance, and find inspiration for your devotional practices.
-                </p>
-              </div>
-            }
-            actions={
-              <div className="mt-6 flex justify-center">
-                <Button asChild size="lg" className="shadow-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-                  <Link href="/events">
-                    Explore All Events <ArrowRight className="ml-2 h-5 w-5" />
+              <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                <Button asChild size="lg" className="h-14 px-8 rounded-full shadow-xl shadow-primary/20 group">
+                  <Link href="/journey" className="flex items-center gap-2">
+                    Trace His Journey <Footprints className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
+                <Button asChild variant="outline" size="lg" className="h-14 px-8 rounded-full border-primary/20 hover:bg-primary/5">
+                  <Link href="/feed">Enter Divine Feed</Link>
+                </Button>
               </div>
-            }
+            </div>
+            
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-[2rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
+              <div className="relative aspect-[4/5] max-w-md mx-auto rounded-[2rem] overflow-hidden shadow-2xl border-8 border-background">
+                <Image 
+                  src="https://i.pinimg.com/736x/f4/e8/fa/f4e8fae530b706b64d5904b4356eb5ce.jpg" 
+                  alt="Lord Hanuman - Portal of Devotion" 
+                  fill
+                  className="object-cover transition-transform duration-[3000ms] group-hover:scale-110"
+                  priority
+                  data-ai-hint="hanuman majestic"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Insights Teaser (Linking to Feed) */}
+      <section className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+          <div className="space-y-4">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Divine Insights</h2>
+            <p className="text-muted-foreground italic">A modern stream of wisdom from the ancient scrolls.</p>
+          </div>
+          <Button asChild variant="link" className="text-primary font-bold uppercase tracking-widest text-xs group">
+            <Link href="/feed" className="flex items-center gap-2">
+              View Spiritual Feed <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
+        </div>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <DevotionalCard 
+            title="The Leap of Faith"
+            description="Sundara Kanda"
+            content="Explore Hanuman's epic crossing of the ocean, a symbol of transcending limitations through Bhakti."
+            className="bg-primary/5 border-primary/10"
+            actions={<Button variant="ghost" asChild className="text-primary"><Link href="/ramayana/sundara-kanda">Explore Kanda</Link></Button>}
           />
+          <DevotionalCard 
+            title="The Path of Dharma"
+            description="Character Spotlight"
+            content="Understand how Lord Rama maintains perfect equanimity even in the face of sudden exile."
+            className="bg-accent/5 border-accent/10"
+            actions={<Button variant="ghost" asChild className="text-accent"><Link href="/characters/rama">View Profile</Link></Button>}
+          />
+          <DevotionalCard 
+            title="Sacred Protection"
+            description="Hanuman Chalisa"
+            content="Immerse in the forty verses of Tulsidas, a shield against all worldly fears and afflictions."
+            className="bg-primary/5 border-primary/10"
+            actions={<Button variant="ghost" asChild className="text-primary"><Link href="/mantras/hanuman-chalisa">Chant Now</Link></Button>}
+          />
+        </div>
+      </section>
+
+      {/* Key Facts Section */}
+      <section className="bg-muted/30 py-24 -mx-4 px-4">
+        <div className="max-w-5xl mx-auto space-y-16">
+          <div className="text-center space-y-4">
+            <h2 className="text-4xl font-bold">The Essence of Bajrangbali</h2>
+            <p className="text-muted-foreground font-light">A concise overview of Lord Hanuman's divine lineage and significance.</p>
+          </div>
+          
+          <div className="bg-card p-8 md:p-12 rounded-[2.5rem] shadow-2xl space-y-12 border border-border/50">
+            <DetailCategory title="Titles & Essence" icon={<Award className="h-8 w-8 text-primary" />}>
+              <DetailItem label="Known As">God of Wisdom, Strength, Courage, Devotion, and Self-Discipline</DetailItem>
+              <DetailItem label="Status">Member of Chiranjivi (Immortals)</DetailItem>
+            </DetailCategory>
+            <DetailCategory title="Affiliations & Abode" icon={<Wind className="h-8 w-8 text-primary" />}>
+              <DetailItem label="Devotion">Supreme Devotee of Lord Rama</DetailItem>
+              <DetailItem label="Divine Aspects">Avatar of Shiva, Son of Vayu (Wind God)</DetailItem>
+              <DetailItem label="Primary Realm">Kishkindha / Gandhamadana Mountain</DetailItem>
+            </DetailCategory>
+            <DetailCategory title="Worship & Symbols" icon={<BookOpen className="h-8 w-8 text-primary" />}>
+              <DetailItem label="Primary Mantra">Oṁ Śrī Hanumate Namaḥ</DetailItem>
+              <DetailItem label="Divine Weapon">Gada (Mace), symbolizing governance and strength</DetailItem>
+              <DetailItem label="Sacred Days">Tuesday (Energy) and Saturday (Protection from Shani)</DetailItem>
+            </DetailCategory>
+          </div>
+        </div>
+      </section>
+
+      {/* Character Teaser Grid */}
+      <section className="container mx-auto px-4">
+        <div className="text-center mb-16 space-y-4">
+          <h2 className="text-4xl font-bold">The Divine Assembly</h2>
+          <p className="text-muted-foreground italic">Figures of Dharma who shaped the course of the Epic.</p>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {featuredCharacters.map((char) => (
+            <Link key={char.slug} href={`/characters/${char.slug}`} className="group space-y-4">
+              <div className="relative aspect-square rounded-3xl overflow-hidden border-2 border-transparent group-hover:border-primary transition-all duration-500">
+                <Image 
+                  src={char.imageUrl} 
+                  alt={char.name} 
+                  fill 
+                  className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                  data-ai-hint={char.imageHint}
+                />
+                <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <div className="text-center">
+                <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{char.name}</h3>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">{char.title.split(' ')[0]}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+        
+        <div className="mt-16 text-center">
+          <Button asChild variant="outline" size="lg" className="rounded-full px-10 group">
+            <Link href="/characters" className="flex items-center gap-2">
+              Meet the Legends <Compass className="h-5 w-5 transition-transform group-hover:rotate-45" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="container mx-auto px-4">
+        <div className="p-12 md:p-20 rounded-[3rem] bg-primary text-primary-foreground text-center space-y-8 relative overflow-hidden shadow-[0_30px_60px_-15px_rgba(249,115,22,0.4)]">
+          <div className="absolute top-0 right-0 p-10 opacity-10">
+            <LayoutDashboard className="h-64 w-64 rotate-12" />
+          </div>
+          <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">Your Spiritual Journey Never Ends.</h2>
+            <p className="text-lg md:text-xl text-white/80 font-light leading-relaxed">
+              Every mantra chanted, every story heard, and every character explored brings you closer to the unwavering strength of Hanuman.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button asChild variant="secondary" size="lg" className="rounded-full px-8 bg-white text-primary hover:bg-white/90">
+                <Link href="/explore">Discover All Sections</Link>
+              </Button>
+              <Button asChild variant="ghost" size="lg" className="rounded-full px-8 text-white hover:bg-white/10">
+                <Link href="/profile">My Spiritual Dashboard</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
     </div>

@@ -1,0 +1,253 @@
+
+{
+  "images": [
+    {
+      "id": "hanuman-hero",
+      "url": "https://i.pinimg.com/736x/f4/e8/fa/f4e8fae530b706b64d5904b4356eb5ce.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Lord Hanuman - Portal of Devotion",
+      "hint": "hanuman majestic"
+    },
+    {
+      "id": "panchamukhi-hero",
+      "url": "https://i.pinimg.com/736x/1f/92/14/1f9214b8cbf36cc1a96d0127ce01ec65.jpg",
+      "width": 736,
+      "height": 1104,
+      "alt": "Panchamukhi Hanuman",
+      "hint": "panchamukhi hanuman"
+    },
+    {
+      "id": "hanuman-journey-hero",
+      "url": "https://i.pinimg.com/736x/13/57/bc/1357bcf3df4dd696c765aba5c71f70ad.jpg",
+      "width": 736,
+      "height": 736,
+      "alt": "Hanuman's Divine Journey",
+      "hint": "hanuman journey"
+    },
+    {
+      "id": "char-rama",
+      "url": "https://i.pinimg.com/736x/15/bd/80/15bd800aa67ea5943482bea8dbe51fa2.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Lord Rama",
+      "hint": "lord rama"
+    },
+    {
+      "id": "char-sita",
+      "url": "https://i.pinimg.com/1200x/46/d8/e7/46d8e771c139188299a03a294bbdce4d.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Mata Sita",
+      "hint": "mata sita"
+    },
+    {
+      "id": "char-lakshmana",
+      "url": "https://i.pinimg.com/1200x/7b/d3/be/7bd3be8d62dfd07a7582498f1dbe5158.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Lakshmana",
+      "hint": "lakshmana warrior"
+    },
+    {
+      "id": "char-bharata",
+      "url": "https://i.pinimg.com/736x/c0/70/46/c070463269db17c54fd947ff7ef9b10d.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Bharata",
+      "hint": "bharata prince"
+    },
+    {
+      "id": "char-shatrughna",
+      "url": "https://i.pinimg.com/1200x/77/b3/1d/77b31d7a1a1d75622c16d7b494f6b143.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Shatrughna",
+      "hint": "shatrughna prince"
+    },
+    {
+      "id": "char-dasharatha",
+      "url": "https://i.pinimg.com/1200x/d0/2d/47/d02d47675fe2813678038b50c7133929.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "King Dasharatha",
+      "hint": "king dasharatha"
+    },
+    {
+      "id": "char-kaikeyi",
+      "url": "https://i.pinimg.com/1200x/9b/fa/70/9bfa70429a89418b5acf878f81b0c4b3.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Queen Kaikeyi",
+      "hint": "queen kaikeyi"
+    },
+    {
+      "id": "char-kausalya",
+      "url": "https://i.pinimg.com/736x/e9/d0/70/e9d070160d618b4128bc9b67106bf24e.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Queen Kausalya",
+      "hint": "queen kausalya"
+    },
+    {
+      "id": "char-sumitra",
+      "url": "https://i.pinimg.com/736x/be/c3/72/bec372db28c2c8776b121a6a64365f5c.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Queen Sumitra",
+      "hint": "queen sumitra"
+    },
+    {
+      "id": "char-janaka",
+      "url": "https://i.pinimg.com/736x/8d/92/18/8d9218aed901c7d4fabec54aac448b98.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "King Janaka",
+      "hint": "king janaka"
+    },
+    {
+      "id": "char-vishwamitra",
+      "url": "https://i.pinimg.com/1200x/ce/12/61/ce12615d7b2ff8ea2b6ab9f7a30e5e81.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Sage Vishwamitra",
+      "hint": "sage vishwamitra"
+    },
+    {
+      "id": "char-vashistha",
+      "url": "https://i.pinimg.com/736x/4b/81/f1/4b81f182c6086be0e14bcfe3d1777acb.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Sage Vashistha",
+      "hint": "sage vashistha"
+    },
+    {
+      "id": "char-agastya",
+      "url": "https://i.pinimg.com/736x/53/a0/b5/53a0b5f6460a9670c3a5b484bf8595c8.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Sage Agastya",
+      "hint": "sage agastya"
+    },
+    {
+      "id": "char-narada",
+      "url": "https://i.pinimg.com/1200x/d3/e3/66/d3e366cc702a3723701bf1317cd52a08.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Sage Narada",
+      "hint": "sage narada"
+    },
+    {
+      "id": "char-angada",
+      "url": "https://i.pinimg.com/736x/29/9e/0d/299e0d275aaca921600ac9f8e0f3f425.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Angada",
+      "hint": "monkey prince"
+    },
+    {
+      "id": "char-sugriva-vali",
+      "url": "https://i.pinimg.com/1200x/e7/1e/e8/e71ee8e9585c2fa21c93fe939eb34409.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Sugriva and Vali",
+      "hint": "monkey kings"
+    },
+    {
+      "id": "char-jambavan",
+      "url": "https://i.pinimg.com/736x/b4/c4/eb/b4c4eba1bb27f2cf9d1931fcb8ec6954.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Jambavan",
+      "hint": "bear king"
+    },
+    {
+      "id": "char-nala-nila",
+      "url": "https://i.pinimg.com/736x/b5/d0/48/b5d048f423ade85a53ecdb1c4e343052.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Nala and Nila",
+      "hint": "monkey engineers"
+    },
+    {
+      "id": "char-ravana",
+      "url": "https://i.pinimg.com/736x/7a/81/66/7a81668dc963304019ca913a87bad62a.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Ravana",
+      "hint": "ravana king"
+    },
+    {
+      "id": "char-vibhishana",
+      "url": "https://i.pinimg.com/736x/98/1f/c1/981fc1ec2735cb1b61917dbc35969fe1.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Vibhishana",
+      "hint": "vibhishana devotee"
+    },
+    {
+      "id": "char-kumbhakarna",
+      "url": "https://i.pinimg.com/736x/82/b9/8e/82b98e5def54987b6e383d769000235e.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Kumbhakarna",
+      "hint": "giant demon"
+    },
+    {
+      "id": "char-indrajit",
+      "url": "https://i.pinimg.com/1200x/b6/e2/4f/b6e24f7b22e81d08995cd68ee33aa7dc.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Indrajit",
+      "hint": "warrior illusion"
+    },
+    {
+      "id": "char-shurpanakha",
+      "url": "https://i.pinimg.com/1200x/11/68/25/116825be8005e5f5808dac79c9d3c788.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Shurpanakha",
+      "hint": "demoness"
+    },
+    {
+      "id": "char-maricha",
+      "url": "https://i.pinimg.com/736x/35/01/50/350150715c0b305029391115f102beef.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Maricha",
+      "hint": "golden deer"
+    },
+    {
+      "id": "char-trijata",
+      "url": "https://i.pinimg.com/736x/2f/18/45/2f18456cbdbf161d8f382a207eff4b70.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Trijata",
+      "hint": "woman comfort"
+    },
+    {
+      "id": "char-jatayu",
+      "url": "https://i.pinimg.com/1200x/85/be/bf/85bebfd7a9a6603dd946156093eccaa5.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Jatayu",
+      "hint": "jatayu hero"
+    },
+    {
+      "id": "char-sampati",
+      "url": "https://i.pinimg.com/736x/13/56/b3/1356b3bc84be99a8ddd44a4261e66f3e.jpg",
+      "width": 736,
+      "height": 920,
+      "alt": "Sampati",
+      "hint": "giant bird"
+    },
+    {
+      "id": "char-lava-kusha",
+      "url": "https://i.pinimg.com/1200x/cc/8c/32/cc8c321f10d12ca38366a2978fd7ac4d.jpg",
+      "width": 1200,
+      "height": 1500,
+      "alt": "Lava and Kusha",
+      "hint": "young princes"
+    }
+  ]
+}

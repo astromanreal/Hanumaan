@@ -1,5 +1,5 @@
 
-'use client';
+// src/app/ashta-siddhis/page.tsx
 import React from 'react'; 
 import { PageHeader } from '@/components/ui/page-header';
 import { DevotionalCard } from '@/components/ui/devotional-card';
@@ -7,9 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { ashtaSiddhiDetails, siddhiIconMap } from '@/data/ashta-siddhis'; 
-// Removed Metadata import as it's handled in layout.tsx
-
-// Metadata has been moved to src/app/ashta-siddhis/layout.tsx
 
 const SectionCard: React.FC<{ title: string; children: React.ReactNode; icon?: ReactNode; className?: string }> = ({ title, children, icon, className }) => (
   <Card className={cn("shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card/80 backdrop-blur-sm", className)}>
@@ -24,7 +21,6 @@ const SectionCard: React.FC<{ title: string; children: React.ReactNode; icon?: R
     </CardContent>
   </Card>
 );
-
 
 export default function AshtaSiddhisPage() {
   return (
@@ -54,7 +50,7 @@ export default function AshtaSiddhisPage() {
           <DevotionalCard
             key={siddhi.name}
             title={siddhi.name}
-            className="bg-card shadow-xl border border-border/50 transition-shadow hover:shadow-primary/20 flex flex-col"
+            className="bg-card shadow-xl border border-border/50 flex flex-col"
             titleClassName="text-2xl !text-primary font-semibold"
             headerClassName="pb-2 pt-4" 
             contentClassName="pt-2 flex-grow flex flex-col" 
@@ -82,22 +78,6 @@ export default function AshtaSiddhisPage() {
           <p><strong>In Devotion:</strong> {ashtaSiddhiDetails.modernContext.inDevotion}</p>
         </SectionCard>
       </div>
-
-      <SectionCard title={ashtaSiddhiDetails.invocation.title} icon={ashtaSiddhiDetails.invocation.icon} className="max-w-3xl mx-auto">
-        <div>
-          <h4 className="font-semibold text-lg text-secondary-foreground mb-1">Primary Invocation Mantra:</h4>
-          <p className="font-serif text-lg text-accent italic text-center py-2">"{ashtaSiddhiDetails.invocation.mantra}"</p>
-        </div>
-        <div>
-          <h4 className="font-semibold text-lg text-secondary-foreground mt-4 mb-2">Popular Hanuman Chalisa Lines:</h4>
-          <ul className="list-disc list-inside space-y-1 pl-4">
-            {ashtaSiddhiDetails.invocation.popularChalisaLines.map((line, index) => (
-              <li key={index} className="font-serif italic">"{line}"</li>
-            ))}
-          </ul>
-        </div>
-      </SectionCard>
-
     </div>
   );
 }

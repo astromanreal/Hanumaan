@@ -3,17 +3,16 @@ import Link from 'next/link';
 import { PageHeader } from '@/components/ui/page-header';
 import { DevotionalCard } from '@/components/ui/devotional-card';
 import { Button } from '@/components/ui/button';
-import { Home, BookOpen, Music, Layers, Zap, ArrowRight, Footprints, CalendarDays } from 'lucide-react';
+import { Home, BookOpen, Music, Layers, Zap, ArrowRight, Footprints, CalendarDays, Users2, LayoutDashboard } from 'lucide-react';
 import React from 'react';
-// Removed Metadata import
 
 const features = [
   {
-    id: 'home',
-    title: 'Homepage',
-    icon: <Home className="h-10 w-10 text-primary group-hover:text-accent transition-colors duration-300" />,
-    descriptionText: "Return to the main portal and rediscover the divine essence of Sri Hanuman, his strength, devotion, and wisdom.",
-    href: '/',
+    id: 'feed',
+    title: 'Spiritual Feed',
+    icon: <LayoutDashboard className="h-10 w-10 text-primary group-hover:text-accent transition-colors duration-300" />,
+    descriptionText: "Immerse yourself in a dynamic stream of Ramayana insights, character spotlights, and sacred mantras.",
+    href: '/feed',
   },
   {
     id: 'ramayana',
@@ -21,6 +20,13 @@ const features = [
     icon: <BookOpen className="h-10 w-10 text-primary group-hover:text-accent transition-colors duration-300" />,
     descriptionText: "Explore a summary of the timeless Ramayana saga, focusing on key events and Lord Hanuman's integral role.",
     href: '/ramayana',
+  },
+  {
+    id: 'characters',
+    title: 'Legends & Figures',
+    icon: <Users2 className="h-10 w-10 text-primary group-hover:text-accent transition-colors duration-300" />,
+    descriptionText: "Discover the major personalities of the Ramayana, from Lord Rama and Mata Sita to the valiant Hanuman.",
+    href: '/characters',
   },
   {
     id: 'hanuman-journey',
