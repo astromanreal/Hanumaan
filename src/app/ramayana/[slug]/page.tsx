@@ -1,4 +1,3 @@
-
 // src/app/ramayana/[slug]/page.tsx
 import { PageHeader } from '@/components/ui/page-header';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import Link from 'next/link';
 import { 
   Shield, Clock, Users2, 
   Sparkles, MapPin, BookOpen, Star, ArrowLeft, ArrowRight,
-  ChevronLeft, ChevronRight, Split, Lightbulb, Quote
+  ChevronLeft, ChevronRight, Split, Lightbulb, Quote, Compass
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ramayanaKandas } from '@/data/epics-data';
@@ -62,7 +61,7 @@ export default async function KandaDetailPage(props: Props) {
           alt={kanda.title}
           fill
           priority
-          className="object-cover transition-transform duration-[3000ms] scale-110 hover:scale-100"
+          className="object-cover transition-transform duration-[3s] scale-110 hover:scale-100"
           data-ai-hint={kanda.imageHint}
         />
         <div className={cn("absolute inset-0 bg-gradient-to-t via-background/60 to-transparent", kanda.colorTheme)} />
