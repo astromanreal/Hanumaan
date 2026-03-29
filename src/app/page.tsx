@@ -83,7 +83,7 @@ export default function HomePage() {
                   src="https://i.pinimg.com/736x/f4/e8/fa/f4e8fae530b706b64d5904b4356eb5ce.jpg" 
                   alt="Lord Hanuman - Portal of Devotion" 
                   fill
-                  className="object-cover transition-transform duration-[3000ms] group-hover:scale-110"
+                  className="object-cover transition-transform duration-[3s] group-hover:scale-110"
                   priority
                   data-ai-hint="hanuman majestic"
                 />
